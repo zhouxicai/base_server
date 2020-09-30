@@ -27,7 +27,7 @@ SocketManager::SocketManager(const CHAR* host, UINT port)
 		strncpy(m_Host, host, IP_SIZE - 1);
 	m_Port = port;
 
-	create();
+	Create();
 
 	__LEAVE_FUNCTION_FOXNET
 }
@@ -36,7 +36,7 @@ SocketManager::~SocketManager()
 {
 	__ENTER_FUNCTION_FOXNET
 
-		close();
+		Close();
 
 	__LEAVE_FUNCTION_FOXNET
 }
@@ -48,30 +48,30 @@ BOOL SocketManager::Init(UINT port, UINT backlog)
 	BOOL ret = FALSE;
 
 	// create socket
-	ret = this->create();
+	ret = this->Create();
 	if (ret == FALSE)
 		throw 1;
 	//	Assert( ret ) ;
 
 		// reuse address before Bind()
 		// 바인드 하기 전에 주소 리유즈를 시스템에 알려야 한다.
-	ret = this->setReuseAddr();
+	ret = this->SetReuseAddr();
 	if (ret == FALSE)
 		throw 1;
 	//	Assert( ret ) ;
 
 		// bind address to socket
 		// 이미 port가 m_Impl에 저장되어 있으므로, 파라미터없는 Bind()를 호출해도 된다.
-	ret = this->bind(port);
+	ret = this->Bind(port);
 	if (ret == FALSE)
 		throw 1;
 	//	Assert( ret ) ;
 
-	//	m_Impl->setSendBufferSize( 9000 );
+	//	m_Impl->SetSendBufferSize( 9000 );
 	//	m_Impl->setReceiveBufferSize( 9000 );
 
 		// set listening queue size
-	ret = this->listen(backlog);
+	ret = this->Listen(backlog);
 	if (ret == FALSE)
 		throw 1;
 	//	Assert( ret ) ;
@@ -79,7 +79,7 @@ BOOL SocketManager::Init(UINT port, UINT backlog)
 	__LEAVE_FUNCTION_FOXNET
 }
 
-BOOL SocketManager::create()
+BOOL SocketManager::Create()
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -89,7 +89,7 @@ BOOL SocketManager::create()
 
 	m_SockAddr.sin_family = AF_INET;
 
-	if (isValid())
+	if (IsValid())
 		return TRUE;
 	else
 		return FALSE;
@@ -100,33 +100,33 @@ BOOL SocketManager::create()
 }
 
 // close previous connection and connect to another server socket
-BOOL SocketManager::reconnect(const CHAR* host, UINT port)
+BOOL SocketManager::Reconnect(const CHAR* host, UINT port)
 {
 	__ENTER_FUNCTION_FOXNET
 
 		// delete old socket impl object
-		close();
+		this->Close();
 
 	// create new socket impl object
 	strncpy(m_Host, host, IP_SIZE - 1);
 	m_Port = port;
 
-	create();
+	Create();
 
 	// try to connect
-	return connect();
+	return Connect();
 
 	__LEAVE_FUNCTION_FOXNET
 
 		return FALSE;
 }
 
-VOID SocketManager::close()
+VOID SocketManager::Close()
 {
 	__ENTER_FUNCTION_FOXNET
 
-		//	if( !isSockError() ) 
-		if (isValid() && !isSockError())
+		//	if( !IsSockError() ) 
+		if (IsValid() && !IsSockError())
 		{
 			_MY_TRY
 			{
@@ -145,7 +145,7 @@ VOID SocketManager::close()
 	__LEAVE_FUNCTION_FOXNET
 }
 
-BOOL SocketManager::connect()
+BOOL SocketManager::Connect()
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -166,21 +166,21 @@ BOOL SocketManager::connect()
 		return 0;
 }
 
-BOOL SocketManager::connect(const CHAR* host, UINT port)
+BOOL SocketManager::Connect(const CHAR* host, UINT port)
 {
 	__ENTER_FUNCTION_FOXNET
 
 		strncpy(m_Host, host, IP_SIZE - 1);
 	m_Port = port;
 
-	return connect();
+	return Connect();
 
 	__LEAVE_FUNCTION_FOXNET
 
 		return 0;
 }
 
-UINT SocketManager::send(const VOID* buf, UINT len, UINT flags)
+UINT SocketManager::Send(const VOID* buf, UINT len, UINT flags)
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -191,7 +191,7 @@ UINT SocketManager::send(const VOID* buf, UINT len, UINT flags)
 		return 0;
 }
 
-UINT SocketManager::receive(VOID* buf, UINT len, UINT flags)
+UINT SocketManager::Receive(VOID* buf, UINT len, UINT flags)
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -202,7 +202,7 @@ UINT SocketManager::receive(VOID* buf, UINT len, UINT flags)
 		return 0;
 }
 
-UINT SocketManager::available()const
+UINT SocketManager::Available()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -213,7 +213,7 @@ UINT SocketManager::available()const
 		return 0;
 }
 
-UINT SocketManager::getLinger()const
+UINT SocketManager::GetLinger()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -234,9 +234,9 @@ BOOL SocketManager::Accept()
 	__ENTER_FUNCTION_FOXNET
 
 		UINT addrlen = sizeof(SOCKADDR_IN);
-	this->close();
+	this->Close();
 
-	this->m_SocketID = this->accept((struct sockaddr *)(&(this->m_SockAddr)), &addrlen);
+	this->m_SocketID = this->Accept((struct sockaddr *)(&(this->m_SockAddr)), &addrlen);
 	if (this->m_SocketID == INVALID_SOCKET)
 		return FALSE;
 
@@ -250,7 +250,7 @@ BOOL SocketManager::Accept()
 		return FALSE;
 }
 
-SOCKET SocketManager::accept(struct sockaddr* addr, UINT* addrlen)
+SOCKET SocketManager::Accept(struct sockaddr* addr, UINT* addrlen)
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -261,7 +261,7 @@ SOCKET SocketManager::accept(struct sockaddr* addr, UINT* addrlen)
 		return INVALID_SOCKET;
 }
 
-BOOL SocketManager::setLinger(UINT lingertime)
+BOOL SocketManager::SetLinger(UINT lingertime)
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -277,18 +277,7 @@ BOOL SocketManager::setLinger(UINT lingertime)
 		return FALSE;
 }
 
-UINT SocketManager::getSockError()const
-{
-	__ENTER_FUNCTION_FOXNET
-
-		return isSockError();
-
-	__LEAVE_FUNCTION_FOXNET
-
-		return 0;
-}
-
-BOOL SocketManager::isNonBlocking()const
+BOOL SocketManager::IsNonBlocking()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -299,7 +288,7 @@ BOOL SocketManager::isNonBlocking()const
 		return FALSE;
 }
 
-BOOL SocketManager::setNonBlocking(BOOL on)
+BOOL SocketManager::SetNonBlocking(BOOL on)
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -310,7 +299,7 @@ BOOL SocketManager::setNonBlocking(BOOL on)
 		return FALSE;
 }
 
-UINT SocketManager::getReceiveBufferSize()const
+UINT SocketManager::GetReceiveBufferSize()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -326,7 +315,7 @@ UINT SocketManager::getReceiveBufferSize()const
 		return 0;
 }
 
-BOOL SocketManager::setReceiveBufferSize(UINT size)
+BOOL SocketManager::SetReceiveBufferSize(UINT size)
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -337,7 +326,7 @@ BOOL SocketManager::setReceiveBufferSize(UINT size)
 		return FALSE;
 }
 
-UINT SocketManager::getSendBufferSize()const
+UINT SocketManager::GetSendBufferSize()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -353,7 +342,7 @@ UINT SocketManager::getSendBufferSize()const
 		return 0;
 }
 
-BOOL SocketManager::setSendBufferSize(UINT size)
+BOOL SocketManager::SetSendBufferSize(UINT size)
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -364,7 +353,7 @@ BOOL SocketManager::setSendBufferSize(UINT size)
 		return FALSE;
 }
 
-UINT SocketManager::getPort()const
+UINT SocketManager::GetPort()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -373,7 +362,7 @@ UINT SocketManager::getPort()const
 	__LEAVE_FUNCTION_FOXNET
 }
 
-IP_t SocketManager::getHostIP()const
+IP_t SocketManager::GetHostIP()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -382,7 +371,7 @@ IP_t SocketManager::getHostIP()const
 	__LEAVE_FUNCTION_FOXNET
 }
 
-BOOL SocketManager::isValid()const
+BOOL SocketManager::IsValid()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -391,7 +380,7 @@ BOOL SocketManager::isValid()const
 	__LEAVE_FUNCTION_FOXNET
 }
 
-SOCKET SocketManager::getSOCKET()const
+SOCKET SocketManager::GetSOCKET()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -400,7 +389,7 @@ SOCKET SocketManager::getSOCKET()const
 	__LEAVE_FUNCTION_FOXNET
 }
 
-BOOL SocketManager::isSockError()const
+BOOL SocketManager::IsSockError()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -419,7 +408,7 @@ BOOL SocketManager::isSockError()const
 		return FALSE;
 }
 
-BOOL SocketManager::bind()
+BOOL SocketManager::Bind()
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -437,7 +426,7 @@ BOOL SocketManager::bind()
 		return 0;
 }
 
-BOOL SocketManager::bind(UINT port)
+BOOL SocketManager::Bind(UINT port)
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -457,7 +446,7 @@ BOOL SocketManager::bind(UINT port)
 		return 0;
 }
 
-BOOL SocketManager::listen(INT backlog)
+BOOL SocketManager::Listen(INT backlog)
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -468,7 +457,7 @@ BOOL SocketManager::listen(INT backlog)
 		return FALSE;
 }
 
-BOOL SocketManager::isReuseAddr()const
+BOOL SocketManager::IsReuseAddr()const
 {
 	__ENTER_FUNCTION_FOXNET
 
@@ -484,7 +473,7 @@ BOOL SocketManager::isReuseAddr()const
 		return 0;
 }
 
-BOOL SocketManager::setReuseAddr(BOOL on)
+BOOL SocketManager::SetReuseAddr(BOOL on)
 {
 	__ENTER_FUNCTION_FOXNET
 

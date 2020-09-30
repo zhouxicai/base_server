@@ -59,9 +59,9 @@ __ENTER_FUNCTION
 	m_pServerSocket = new SocketManager(  ) ;
 //	Assert( m_pServerSocket ) ;
 	m_pServerSocket->Init(999);
-	m_pServerSocket->setNonBlocking() ;
+	m_pServerSocket->SetNonBlocking() ;
 
-	m_SocketID = m_pServerSocket->getSOCKET() ;
+	m_SocketID = m_pServerSocket->GetSOCKET() ;
 //	Assert( m_SocketID != INVALID_SOCKET ) ;
 
 	FD_SET(m_SocketID , &m_ReadFDs[SELECT_BAK]);
@@ -164,13 +164,13 @@ __ENTER_FUNCTION
 	//	ServerPlayer* pPlayer = g_pPlayerPool->GetPlayer(m_pPlayers[i]) ;
 	//	Assert( pPlayer ) ;
 
-	//	SOCKET s = pPlayer->GetSocket()->getSOCKET() ;
+	//	SOCKET s = pPlayer->GetSocket()->GetSOCKET() ;
 	//	if( s == m_SocketID )
 	//		continue ;
 
 	//	if( FD_ISSET( s, &m_ReadFDs[SELECT_USE] ) )
 	//	{
-	//		if( pPlayer->GetSocket()->isSockError() )
+	//		if( pPlayer->GetSocket()->IsSockError() )
 	//		{//连接出现错误
 	//			RemovePlayer( pPlayer ) ;
 	//		}
@@ -221,13 +221,13 @@ __ENTER_FUNCTION
 	//	ServerPlayer* pPlayer = g_pPlayerPool->GetPlayer(m_pPlayers[i]) ;
 	//	Assert( pPlayer ) ;
 
-	//	SOCKET s = pPlayer->GetSocket()->getSOCKET() ;
+	//	SOCKET s = pPlayer->GetSocket()->GetSOCKET() ;
 	//	if( s == m_SocketID )
 	//		continue ;
 
 	//	if( FD_ISSET( s, &m_WriteFDs[SELECT_USE] ) )
 	//	{
-	//		if( pPlayer->GetSocket()->isSockError() )
+	//		if( pPlayer->GetSocket()->IsSockError() )
 	//		{//连接出现错误
 	//			RemovePlayer( pPlayer ) ;
 	//		}
@@ -276,7 +276,7 @@ __ENTER_FUNCTION
 	//	ServerPlayer* pPlayer = g_pPlayerPool->GetPlayer(m_pPlayers[i]) ;
 	//	Assert( pPlayer ) ;
 
-	//	SOCKET s = pPlayer->GetSocket()->getSOCKET() ;
+	//	SOCKET s = pPlayer->GetSocket()->GetSOCKET() ;
 	//	if( s == m_SocketID )
 	//	{//侦听句柄出现问题，难。。。
 	//		Assert( FALSE ) ;
@@ -321,7 +321,7 @@ __ENTER_FUNCTION
 
 
 //	Log::SaveLog( WORLD_LOGFILE, "Server::AcceptNewConnection(SOCKET:%d)...OK", 
-//		client->GetSocket()->getSOCKET() ) ;
+//		client->GetSocket()->GetSOCKET() ) ;
 
 	return TRUE ;
 
@@ -347,7 +347,7 @@ __ENTER_FUNCTION
 	//	return FALSE ;
 	//}
 
-	//SOCKET fd = pPlayer->GetSocket()->getSOCKET() ;
+	//SOCKET fd = pPlayer->GetSocket()->GetSOCKET() ;
 	//Assert( fd != INVALID_SOCKET ) ;
 
 	//m_MinFD = min(fd , m_MinFD);
