@@ -54,14 +54,12 @@ BOOL SocketManager::Init(UINT port, UINT backlog)
 	//	Assert( ret ) ;
 
 		// reuse address before Bind()
-		// 바인드 하기 전에 주소 리유즈를 시스템에 알려야 한다.
 	ret = this->SetReuseAddr();
 	if (ret == FALSE)
 		throw 1;
 	//	Assert( ret ) ;
 
 		// bind address to socket
-		// 이미 port가 m_Impl에 저장되어 있으므로, 파라미터없는 Bind()를 호출해도 된다.
 	ret = this->Bind(port);
 	if (ret == FALSE)
 		throw 1;
